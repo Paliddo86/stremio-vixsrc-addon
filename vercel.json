@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/*.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/manifest.json", "dest": "/api/manifest.js" },
+    { "src": "/meta/(.*)/(.*)", "dest": "/api/meta.js?type=$1&id=$2" },
+    { "src": "/stream/(.*)/(.*)", "dest": "/api/stream.js?type=$1&id=$2" },
+    { "src": "(.*)", "dest": "/api/manifest.js" }
+  ]
+}
