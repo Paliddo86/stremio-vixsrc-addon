@@ -1,0 +1,2 @@
+name = "stremio-vixsrc-addon"
+main = "src/index.js"
