@@ -1,35 +1,54 @@
 # Stremio Vixsrc Addon (esempio)
 
-Questo repository contiene un addon di esempio per Stremio che riceve gli ID da Stremio (imdb:tt..., tmdb:12345), risolve i metadati via TMDB (se fornita la TMDB_KEY) e tenta di recuperare stream tramite vixsrc.to (stub).
+Questo repository contiene un addon di esempio per Stremio che riceve gli ID da Stremio (imdb:tt..., tmdb:12345), risolve i metadati via TMDB (se fornita la TMDB_KEY) e tenta di recuperare stream tramite vixsrc.to (integrazione adattata dal repo itaflix-tvos).
 
-Nota importante: il codice per l'accesso effettivo a vixsrc.to è uno stub. Dovrai adattare la parte di fetch al servizio reale e assicurarti di rispettare i termini di servizio e le leggi sul copyright.
+> Nota importante: l'estrattore integra la logica usata nel repo Paliddo86/itaflix-tvos per ricostruire la master playlist di vixsrc.to. Assicurati di usare questo codice rispettando i termini di servizio e la normativa sul copyright.
 
 Files principali
-- src/index.js - server Express con gli endpoint /manifest.json, /meta/:type/:id e /stream/:type/:id
-- package.json
+- api/manifest.js - endpoint manifest (serverless per Vercel)
+- api/meta.js - endpoint meta minimale (non richiede TMDB)
+- api/stream.js - endpoint stream che utilizza l'extractor vixsrc
+- src/extractors/vixsrc.js - extractor adattato dal tuo repo itaflix-tvos
+- vercel.json - configurazione per deploy su Vercel
 
-Variabili d'ambiente richieste
-- TMDB_KEY (opzionale ma consigliata) - la tua TMDB API key per risolvere imdb <-> tmdb e ottenere metadati
-- VIXSRC_KEY (opzionale) - se hai accesso a un'API key per vixsrc
-- PORT (opzionale) - porta per il server locale (default 3000)
+Aggiungi l'addon a Stremio (1-click)
+
+Se il tuo manifest è già deployato su Vercel (o è raggiungibile pubblicamente), puoi aggiungerlo a Stremio con un solo click usando lo schema stremio://
+
+[![Aggiungi a Stremio](https://img.shields.io/badge/Add%20to-Stremio-brightgreen)](stremio://addon?url=https://stremio-vixsrc-addon-ok1gfvxwf-paliddo-production.vercel.app/manifest.json)
+
+Oppure clicca questo link diretto:
+
+Aggiungi a Stremio: stremio://addon?url=https://stremio-vixsrc-addon-ok1gfvxwf-paliddo-production.vercel.app/manifest.json
+
+Se il click non apre automaticamente Stremio (dipende dal browser/sistema), copia e incolla manualmente il manifest URL in Stremio:
+
+Manifest URL (copia/incolla):
+
+```
+https://stremio-vixsrc-addon-ok1gfvxwf-paliddo-production.vercel.app/manifest.json
+```
+
+Istruzioni alternative — Aggiunta manuale tramite Stremio
+1. Apri Stremio sul tuo dispositivo.
+2. Vai in "Add-ons" -> "Developer" (o "My add-ons" nelle versioni più recenti).
+3. Seleziona "Add add-on by URL" (o simile) e incolla il Manifest URL (sopra).
+4. Conferma: Stremio caricherà il manifest e mostrerà l'addon.
 
 Come testare in locale
 1. Clona il repo
 2. npm install
-3. Esporta le variabili d'ambiente se disponibili (es. TMDB_KEY)
-   export TMDB_KEY=tuatmdbkey
-   export VIXSRC_KEY=tuavixkey
-4. npm start
-5. Apri http://localhost:3000/manifest.json per verificare il manifest
-6. Chiamata di test metadati: http://localhost:3000/meta/movie/imdb:tt0111161
-7. Chiamata di test stream: http://localhost:3000/stream/movie/imdb:tt0111161
+3. vercel dev (o `npm start` se scegli di esporre un server locale) 
+4. Usa ngrok oppure `vercel dev` per avere un URL pubblico se vuoi testare l'addon da Stremio sullo stesso dispositivo o su dispositivi diversi.
 
-Deploy su host gratuiti
-- Vercel: carica il progetto, imposta le variabili d'ambiente in Settings. Se usi Vercel Serverless Functions potresti dover adattare `src/index.js` in una funzione `api/index.js`.
-- Cloudflare Workers: l'app attuale è un server Express — puoi riscrivere la logica in un Worker (o usare `wrangler dev` + adapter). In README ho incluso istruzioni di base.
+Deploy su Vercel
+- Importa il repository su Vercel e seleziona la branch `feature/integrate-vixsrc` (o `master` dopo il merge).
+- Non sono richieste variabili d'ambiente per l'estrazione da vixsrc; TMDB_KEY è opzionale solo se vuoi meta arricchiti.
 
-Riferimenti
-- Repo di riferimento fornito dall'autore: Paliddo86/itaflix-tvOS (usalo come documentazione e ispirazione)
+Esempi di endpoint
+- Manifest: `https://<tuo-deploy>.vercel.app/manifest.json`
+- Meta: `https://<tuo-deploy>.vercel.app/meta/movie/tmdb:12345` (o `imdb:tt...`)
+- Stream: `https://<tuo-deploy>.vercel.app/stream/movie/tmdb:12345` (o `imdb:tt...`)
 
 Licenza
 MIT
