@@ -1,5 +1,7 @@
+const manifest = require('../public/manifest.json');
+
 module.exports = (req, res) => {
-  // Redirect legacy API manifest requests to the static manifest in /public
+  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
@@ -8,8 +10,15 @@ module.exports = (req, res) => {
     return res.end();
   }
 
+  // Always expose CORS headers on responses
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Location', '/manifest.json');
-  res.statusCode = 302;
-  return res.end();
+  res.setHeader('Content-Type', 'application/json');
+  try {
+    res.statusCode = 200;
+    return res.end(JSON.stringify(manifest));
+  } catch (err) {
+    console.error('manifest serve error', err);
+    res.statusCode = 500;
+    return res.end(JSON.stringify({ error: 'internal' }));
+  }
 };
