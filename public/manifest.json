@@ -1,11 +1,29 @@
 {
   "id": "org.paliddo86.stremio.vixsrc",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "Stremio Vixsrc Addon (integrated)",
   "description": "Addon che usa vixsrc.to per trovare stream. Usa l'id passato da Stremio (non serve TMDB/IMDB mapping).",
-  "resources": ["stream", "meta"],
+  "resources": ["stream", "meta", "catalog"],
   "types": ["movie", "series"],
   "idPrefixes": ["imdb:", "tmdb:", "vix:", "tt"],
-  "catalogs": [],
+  "catalogs": [
+    {
+      "type": "movie",
+      "id": "vixsrc-movies",
+      "name": "Vixsrc Movies",
+      "extra": [
+        { "name": "search", "isRequired": false },
+        { "name": "genre", "isRequired": false }
+      ]
+    },
+    {
+      "type": "series",
+      "id": "vixsrc-series",
+      "name": "Vixsrc Series",
+      "extra": [
+        { "name": "search", "isRequired": false }
+      ]
+    }
+  ],
   "behaviorHints": { "disableTrackers": true }
 }
