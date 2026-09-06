@@ -4,7 +4,6 @@
     { "src": "api/*.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/manifest.json", "dest": "/api/manifest.js" },
     { "src": "/meta/(.*)/(.*)", "dest": "/api/addon.js?type=$1&id=$2" },
     { "src": "/stream/(.*)/(.*)", "dest": "/api/addon.js?type=$1&id=$2" },
     { "src": "/catalog/(.*)/(.*)", "dest": "/api/addon.js?type=$1&id=$2" }
